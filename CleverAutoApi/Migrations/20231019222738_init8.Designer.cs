@@ -3,6 +3,7 @@ using System;
 using CleverAutoApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleverAutoApi.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231019222738_init8")]
+    partial class init8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
@@ -29,6 +32,9 @@ namespace CleverAutoApi.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("EstimatedNextServiceMileage")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Make")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -41,15 +47,9 @@ namespace CleverAutoApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UseOfCarPerDay")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("VIN")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("YearOfFirstUse")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -93,9 +93,6 @@ namespace CleverAutoApi.Migrations
 
                     b.Property<DateTime>("DateOfService")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("EstimatedNextServiceMileage")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MileageAtService")
                         .HasColumnType("INTEGER");

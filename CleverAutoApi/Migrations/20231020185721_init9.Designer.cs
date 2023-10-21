@@ -3,6 +3,7 @@ using System;
 using CleverAutoApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleverAutoApi.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231020185721_init9")]
+    partial class init9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
@@ -41,15 +44,9 @@ namespace CleverAutoApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UseOfCarPerDay")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("VIN")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("YearOfFirstUse")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

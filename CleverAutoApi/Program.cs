@@ -1,10 +1,7 @@
 using CleverAutoApi.Data;
 using CleverAutoApi.Services;
 using Hangfire;
-using Hangfire.SQLite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 var builder = WebApplication.CreateBuilder(args);
 
 SQLitePCL.Batteries.Init();
@@ -12,10 +9,11 @@ SQLitePCL.Batteries.Init();
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<CheckServiceJob>();
+builder.Services.AddScoped<CustomerService>();
+
 builder.Services.AddHangfire(configuration =>
-{
-    string connectionString = "Data Source=hangfire.db;"; // Modify the connection string as needed
-    GlobalConfiguration.Configuration.UseSQLiteStorage(connectionString);
+{    
+    GlobalConfiguration.Configuration.UseInMemoryStorage();
 });
 
 builder.Services.AddHangfireServer(); // Add Hangfire server
@@ -48,7 +46,12 @@ using (var scope = app.Services.CreateScope())
 {
     var job = scope.ServiceProvider.GetRequiredService<CheckServiceJob>();
     var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();
-    recurringJobManager.AddOrUpdate("daily-service-check", () => job.CheckService(), Cron.Daily);
+    recurringJobManager.AddOrUpdate("daily-service-check", () => job.CheckService(), "*/30 * * * * *");
+
+    //With this modification, the job will run daily at 8:00 AM.
+
+    //recurringJobManager.AddOrUpdate("daily-service-check", () => job.CheckService(), "0 0 8 * * *");
+
 }
 app.Run();
 

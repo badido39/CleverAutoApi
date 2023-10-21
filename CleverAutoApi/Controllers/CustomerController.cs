@@ -1,7 +1,9 @@
 ﻿using CleverAutoApi.Data;
 using CleverAutoApi.DTOs;
 using CleverAutoApi.Models;
+using CleverAutoApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleverAutoApi.Controllers
 {
@@ -9,29 +11,56 @@ namespace CleverAutoApi.Controllers
     [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
-        private readonly MyDbContext _context;
+        private readonly CustomerService customerService;
 
-        public CustomerController(MyDbContext context)
+        public CustomerController(CustomerService customerService)
         {
-            _context = context;
+            this.customerService = customerService;
         }
 
         [HttpPost]
         [Route("CreateCustomerWithCarAndService")]
-        public IActionResult CreateCustomerWithCarAndService(CustomerCarServiceDTO DTO)
+        public IActionResult CreateCustomerWithCarAndService(Customer customer)
         {
-            _context.Customers.Add(DTO.Customer);
-            _context.SaveChanges();
-
-            DTO.Car.CustomerId = DTO.Customer.Id; // Assuming the Car model has a Customer property
-            _context.Cars.Add(DTO.Car);
-            _context.SaveChanges();
-
-            DTO.Service.CarId = DTO.Car.Id; // Assuming the Service model has a Car property
-            _context.Services.Add(DTO.Service);
-            _context.SaveChanges();
+            customerService.AddCustomer(customer);
 
             return Ok("Customer, Car, and Service added successfully.");
+        }
+
+        [HttpGet]
+        [Route("GetAllCustomers")]
+        public List<Customer> GetAllCustomers()
+        {
+            return customerService.GetAllCustomers();
+        }
+
+
+        [HttpGet]
+        [Route("GetCustomerByName")]
+        public Customer GetCustomerByName(string name)
+        {
+            return customerService.GetCustomerByName(name);
+        }
+        [HttpPost]
+        [Route("UpdateCustomer")]
+        public IActionResult UpdateCustomer(Customer customer)
+        {
+            customerService.UpdateCustomer(customer);
+
+            return Ok("Customer, Updated");
+        }
+        [HttpDelete]
+        [Route("DeleteCustomer")]
+        public IActionResult DeleteCustomer(string name)
+        {
+            var customer = customerService.GetCustomerByName(name);
+            if(customer == null)
+            {
+                return Ok("Customer not Found");
+            }
+            customerService.DeleteCustomer(customer);
+
+            return Ok("Customer, Updated");
         }
     }
 }

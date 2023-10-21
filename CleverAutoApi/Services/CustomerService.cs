@@ -1,5 +1,6 @@
 ﻿using CleverAutoApi.Data;
 using CleverAutoApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleverAutoApi.Services
 {
@@ -15,6 +16,7 @@ namespace CleverAutoApi.Services
         // Add a new customer
         public void AddCustomer(Customer customer)
         {
+            customer.Name.ToLower();
             _dbContext.Customers.Add(customer);
             _dbContext.SaveChanges();
         }
@@ -22,13 +24,13 @@ namespace CleverAutoApi.Services
         // Get a list of all customers
         public List<Customer> GetAllCustomers()
         {
-            return _dbContext.Customers.ToList();
+            return _dbContext.Customers.Include(x=>x.Car).ThenInclude(x=>x.Services).ToList();
         }
 
         // Get a customer by their name
         public Customer GetCustomerByName(string name)
         {
-            return _dbContext.Customers.FirstOrDefault(c => c.Name == name);
+            return _dbContext.Customers.Include(x => x.Car).ThenInclude(x => x.Services).FirstOrDefault(c => c.Name.ToLower()==name.ToLower());
         }
 
         // Update an existing customer
