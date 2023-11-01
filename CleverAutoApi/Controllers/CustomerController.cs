@@ -62,5 +62,12 @@ namespace CleverAutoApi.Controllers
 
             return Ok("Customer, Updated");
         }
+        [HttpGet]
+        [Route("ClearDatabase")]
+        public IActionResult ClearDatabase()
+        {
+            customerService.ClearDatabase();
+            return Ok("Database Cleared succufully !!!");
+        }
     }
 }

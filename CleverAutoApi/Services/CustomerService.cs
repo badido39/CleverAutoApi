@@ -46,6 +46,11 @@ namespace CleverAutoApi.Services
             _dbContext.Customers.Remove(customer);
             _dbContext.SaveChanges();
         }
+        public void ClearDatabase()
+        {
+            _dbContext.Customers.ExecuteDelete();
+            _dbContext.SaveChanges();
+        }
     }
 }
 
