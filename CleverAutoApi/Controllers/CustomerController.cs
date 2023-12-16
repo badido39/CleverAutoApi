@@ -2,7 +2,9 @@
 using CleverAutoApi.DTOs;
 using CleverAutoApi.Models;
 using CleverAutoApi.Services;
+using CleverAutoApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleverAutoApi.Controllers
@@ -12,10 +14,13 @@ namespace CleverAutoApi.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerService customerService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public CustomerController(CustomerService customerService)
+
+        public CustomerController(CustomerService customerService, IHubContext<NotificationHub> hubContext)
         {
             this.customerService = customerService;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -30,7 +35,9 @@ namespace CleverAutoApi.Controllers
         [HttpGet]
         [Route("GetAllCustomers")]
         public List<Customer> GetAllCustomers()
+
         {
+            _hubContext.Clients.All.SendAsync("ReceiveMessage", "User Added Succufully");
             return customerService.GetAllCustomers();
         }
 
