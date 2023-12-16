@@ -2,8 +2,12 @@
 using CleverAutoApi.DTOs;
 using CleverAutoApi.Models;
 using CleverAutoApi.Services;
+using CleverAutoApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using SignalRWebApi.Services;
+using System.Diagnostics;
 
 namespace CleverAutoApi.Controllers
 {
@@ -13,9 +17,13 @@ namespace CleverAutoApi.Controllers
     {
         private readonly CustomerService customerService;
 
-        public CustomerController(CustomerService customerService)
+        private readonly INotificationService _notificationService;
+
+
+        public CustomerController(CustomerService customerService, INotificationService notificationService)
         {
             this.customerService = customerService;
+            _notificationService = notificationService;
         }
 
         [HttpPost]
@@ -30,7 +38,11 @@ namespace CleverAutoApi.Controllers
         [HttpGet]
         [Route("GetAllCustomers")]
         public List<Customer> GetAllCustomers()
+
         {
+            Notification notification = new Notification { Created = DateTime.UtcNow, Message = "Hello World kjh;dkijhb;dkijb;kjbd", Title = "Wather ForCast" };
+            Debug.WriteLine(notification.Message);
+            _notificationService.SendNotification(notification);
             return customerService.GetAllCustomers();
         }
 
