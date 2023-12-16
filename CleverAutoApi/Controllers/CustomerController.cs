@@ -16,6 +16,7 @@ namespace CleverAutoApi.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly CustomerService customerService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         private readonly INotificationService _notificationService;
 
